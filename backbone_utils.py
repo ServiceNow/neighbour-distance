@@ -30,7 +30,8 @@ class IntermediateFeatureModule(torch.nn.Module):
 
         # run a dummy input through the network:
         dummy_input = torch.randn(1, 3, dummy_input_size, dummy_input_size)
-        dummy_output_shapes = [t.shape for t in self.forward(dummy_input).values()]
+        dummy_output_shapes = [t.shape
+                               for t in self.forward(dummy_input).values()]
         self.output_channels = [shape[1] for shape in dummy_output_shapes]
 
         self.size_factors = []
@@ -39,9 +40,11 @@ class IntermediateFeatureModule(torch.nn.Module):
             self.size_factors.append(shape[2] / input_size)
             input_size = shape[2]
 
-    def forward(self, x: torch.Tensor) -> typing.OrderedDict[str, torch.Tensor]:
+    def forward(self,
+                x: torch.Tensor) -> typing.OrderedDict[str, torch.Tensor]:
         cache_keys = [
-            f"{feature_layer}_{self.device}" for feature_layer in self.feature_layers
+            f"{feature_layer}_{self.device}"
+            for feature_layer in self.feature_layers
         ]
         if not all(layer in self.cache for layer in cache_keys):
             # run forward pass of base_model
@@ -50,7 +53,8 @@ class IntermediateFeatureModule(torch.nn.Module):
         output = OrderedDict(
             [
                 (feature_layer, self.cache[cache_key])
-                for feature_layer, cache_key in zip(self.feature_layers, cache_keys)
+                for feature_layer, cache_key in zip(self.feature_layers,
+                                                    cache_keys)
             ]
         )
 
